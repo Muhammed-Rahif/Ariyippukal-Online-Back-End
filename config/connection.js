@@ -4,10 +4,10 @@ const state = {
 };
 
 module.exports.connect = (done) => {
-  const url = process.env.MONGODB_URI || "mongodb://localhost:27017";
-  const dbname = "AriyippukalOnline";
+    const dbname = "AriyippukalOnline";
+  const url = "mongodb+srv://muhammed-rahif:hkYx1f5WywU2GPrA@ariyippukalonline.yrugo.mongodb.net/"+dbname+"?retryWrites=true&w=majority" || "mongodb://localhost:27017";
 
-  mongoClient.connect(url, (err, data) => {
+  mongoClient.connect(url,{ useNewUrlParser: true, useUnifiedTopology: true }, (err, data) => {
     if (err) {
       return done(err);
     } else {

@@ -33,7 +33,7 @@ db.connect((err) => {
   if (err) {
     console.log("Database connection Error :" + err);
   } else {
-    console.log("Database connected to port 27017");
+    console.log("Database successfully connected to port!");
   }
 });
 
