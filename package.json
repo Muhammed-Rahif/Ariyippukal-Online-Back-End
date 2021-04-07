@@ -1,0 +1,31 @@
+{
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "body-parser": "^1.19.0",
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "express-fileupload": "^1.2.1",
+    "express-handlebars": "^5.3.0",
+    "express-session": "^1.17.1",
+    "moment": "^2.29.1",
+    "mongodb": "^3.6.5",
+    "promise": "^8.1.0",
+    "sharp": "^0.28.0",
+    "uuid": "^8.3.2"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.7"
+  },
+  "scripts": {
+    "start": "nodemon server.js"
+  },
+  "engines": {
+    "node": "12.19.0"
+  },
+  "name": "back-end",
+  "version": "1.0.0",
+  "description": "Ariyippukal Online back end side",
+  "main": "server.js",
+  "author": "Muhammed Rahif",
+  "license": "ISC"
+}

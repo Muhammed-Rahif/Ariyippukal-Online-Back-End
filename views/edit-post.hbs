@@ -1,0 +1,115 @@
+<link rel="preconnect" href="https://fonts.gstatic.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap"
+    rel="stylesheet">
+{{#if responseMsg}}
+<style>
+    .swal-overlay {
+        background-color: rgba(0, 0, 0, 0.45);
+    }
+</style>
+<script>
+    window.onload = () => {
+        $("#postDate").val(moment().format('LLL'));
+        $("#date").val(new Date()));
+    }
+</script>
+{{else}}
+<script>
+    setTimeout(()=>{
+        $("#postDate").val(moment().format('LLL'));
+        $("#date").val(new Date());
+    },0)
+</script>
+{{/if}}
+<div style="padding-top: 2.45em;" class="page-wrapper bg-dark p-b-50">
+    <div class="wrapper wrapper--w900">
+        <div class="card card-6">
+            <div class="card-heading">
+                <h2 class="title">Edit a existing post</h2>
+            </div>
+            <div class="card-body">
+                <a href="/" style="float: right;margin:.56em ;">Go back</a>
+                <form method="POST" action="/edit-post/{{postData.postId}}" enctype="multipart/form-data">
+                    <div style="display: none;">
+                        <input hidden type="text" name="postDate" id="postDate">
+                        <input hidden type="text" name="date" id="date">
+                        <input hidden type="text" name="imgSelected" id="imgSelected" value="false"> 
+                    </div>
+                    <div class="form-row">
+                        <div class="name">Main title *</div>
+                        <div class="value">
+                            <input required class="input--style-6" maxlength="72" type="text" name="mainTitle"
+                                placeholder="Maximum 72 letters" value="{{postData.mainTitle}}">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="name">Post category *</div>
+                        <div class="value">
+                            <div class="input-group">
+                                <input id="select" required class="input--style-6" name="postCategory" maxlength="12"
+                                    placeholder="Maximum 12 letters" value="{{postData.postCategory}}">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="name">Sub title *</div>
+                        <div class="value">
+                            <div class="input-group">
+                                <input required class="input--style-6" type="text" name="postSubtitle"
+                                    placeholder="Sub title here" value="{{postData.postSubtitle}}">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="name">Main description *</div>
+                        <div class="value">
+                            <div class="input-group">
+                                <textarea required class="textarea--style-6" name="mainDescription"
+                                    placeholder="Main desicription here">{{postData.mainDescription}}</textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="name">Sub description</div>
+                        <div class="value">
+                            <div class="input-group">
+                                <textarea class="textarea--style-6" name="subDescription"
+                                    placeholder="Main desicription here">{{postData.subDescription}}</textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="name">Third description</div>
+                        <div class="value">
+                            <div class="input-group">
+                                <textarea class="textarea--style-6" name="thirdDescription"
+                                    placeholder="Third desicription here">{{postData.thirdDescription}}</textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="name">Main image </div>
+                        <div class="value">
+                            <div class="input-group js-input-file">
+                                <img style="width: 100%;" id="imgView" src="/images/main-images/{{postData.postId}}.jpg" alt="">
+                                <input onchange="imageSelected(event)" class="input-file" type="file" accept="image/jpeg" name="mainImage" id="file">
+                                <label class="label--file" for="file">Choose file</label>
+                                <span class="input-file__info">No file chosen</span>
+                            </div>
+                            <div class="label--desc">Upload your main image here. Max file size 50 MB</div>
+                        </div>
+                    </div>
+            </div>
+            <div class="card-footer">
+                <button class="btn btn--radius-2 btn--blue-2" type="submit">Update existing post</button>
+            </div>
+            </form>
+        </div>
+    </div>
+</div>
+<script>
+    function imageSelected(event){
+        document.getElementById('imgView').src=URL.createObjectURL(event.target.files[0]);
+        document.getElementById("imgSelected").value="true";
+    }
+</script>

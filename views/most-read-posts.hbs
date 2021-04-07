@@ -1,0 +1,110 @@
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+<link rel="preconnect" href="https://fonts.gstatic.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap"
+    rel="stylesheet">
+<script>
+    setTimeout(() => {
+        axios({
+            method: "post",
+            url: "/get-all-most-read-posts",
+        })
+            .then(function (response) {
+                response.data.forEach(itm => {
+                    $(`#${itm}`).attr('checked', true);
+                })
+            })
+            .catch(function (response) {
+                //handle error
+                console.log(response);
+            });
+    }, 0)
+</script>
+<div style="font-family: 'Poppins', sans-serif;" class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <h1 style="font-weight: bold;" class="text-center m-3">Add to most read posts</h1>
+        </div>
+        <div style="display: flex;" class="col-md-12 justify-content-center align-items-center">
+            <a href="/" class="btn btn-primary text-center text-white">Go to home</a>
+        </div>
+        <div class="col-md-12 mb-5">
+            <hr>
+            <table id="tbl" class="table table-hover table-bordered table-responsive-md">
+                <thead>
+                    <tr>
+                        <th scope="col">Date</th>
+                        <th scope="col">Title</th>
+                        <th scope="col">Description</th>
+                        <th scope="col">Photo</th>
+                        <th scope="col">Add to most read</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{#each allPosts}}
+                    <tr>
+                        <th scope="row">{{this.postDate}}</th>
+                        <td>{{this.mainTitle}}</td>
+                        <td style="max-width: 40px;text-overflow: ellipsis;overflow: hidden;white-space: nowrap;">
+                            {{this.mainDescription}}</td>
+                        <td><img width="100" src="/images/thumb-images/{{this.postId}}.jpg" alt=""></td>
+                        <td>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="{{this.postId}}"
+                                    id="{{this.postId}}">
+                                {{!-- <label class="form-check-label" for="">
+                                    Not added
+                                </label> --}}
+                            </div>
+                        </td>
+                    </tr>
+                    {{/each}}
+                </tbody>
+            </table>
+            <div style="display: flex;align-items: center;justify-content: center;" class="col-md-12">
+                <hr>
+                <button class="btn btn-success" id="submitBtn">Submit changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js"></script>
+<script type="text/javascript">
+    $(function () {
+        $("#submitBtn").click(function () {
+            //Create an Array.
+            var selected = new Array();
+
+            //Reference the CheckBoxes and insert the checked CheckBox value in Array.
+            $("#tbl input[type=checkbox]:checked").each(function () {
+                selected.push(this.value);
+            });
+            let data = {
+                selected: selected
+            };
+            //Sending request
+            axios({
+                method: "post",
+                url: "/add-most-read-posts",
+                data: data,
+            })
+                .then(async function (response) {
+                    if (response.status) {
+                        await swal("Most read posts list updated!", "", "success");
+                        location.href = "./most-read-posts"
+                    } else {
+                        await swal("Something went wrong!", "", "error");
+                        location.href = "./most-read-posts"
+                    }
+                })
+                .catch(function (response) {
+                    //handle error
+                    console.log(response);
+                });
+        });
+    });
+</script>
+{{!-- Axios cdn --}}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js"></script>
+{{!-- Bootsrap cdn --}}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>

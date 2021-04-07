@@ -1,0 +1,84 @@
+{{#if loginErr}}
+<style>
+    ::placeholder {
+        color: red;
+        opacity: 1;
+        /* Firefox */
+    }
+
+    :-ms-input-placeholder {
+        /* Internet Explorer 10-11 */
+        color: red;
+    }
+
+    ::-ms-input-placeholder {
+        /* Microsoft Edge */
+        color: red;
+    }
+</style>
+<script>
+    window.onload = () => {
+        let loginErr = "{{loginErr}}";
+        document.getElementById("invalidErr").innerHTML=`Incorrect Admin ${loginErr.slice(5)} Typed!`
+        document.getElementById("adminId").value = "{{reqData.adminId}}"
+        document.getElementById("adminName").value = "{{reqData.adminName}}"
+        document.getElementById("adminPassword").value = "{{reqData.adminPassword}}"
+        document.getElementById("adminEmail").value = "{{reqData.adminEmail}}"
+        document.getElementById(loginErr).focus();
+        document.getElementById(loginErr).value = "";
+    }
+</script>
+{{/if}}
+<div style="padding-top: 2.45em;" class="page-wrapper bg-dark p-b-50">
+    <div class="wrapper wrapper--w900">
+        <div class="card card-6">
+            <div class="card-heading">
+                <h2 class="title">Admin login</h2>
+            </div>
+            <div class="card-body">
+            {{#if loginErr}}
+            <div style="display: flex;align-items: center;justify-content: center;" id="err-display">
+                <p id="invalidErr" style="color: red;text-align: center;"></p>
+            </div>
+            {{/if}}
+                <form action="/login" method="POST" id="loginForm">
+                    <div class="form-row">
+                        <div class="name">Admin ID *</div>
+                        <div class="value">
+                            <input required class="input--style-6" type="number" id="adminId" name="adminId"
+                                placeholder="Admin ID here">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="name">Admin name *</div>
+                        <div class="value">
+                            <input required class="input--style-6" type="text" id="adminName" name="adminName"
+                                placeholder="Admin name here">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="name">Admin email *</div>
+                        <div class="value">
+                            <div class="input-group">
+                                <input required class="input--style-6" type="email" id="adminEmail" name="adminEmail"
+                                    placeholder="Admin email here">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="name">Password *</div>
+                        <div class="value">
+                            <div class="input-group">
+                                <input required class="input--style-6" type="password" id="adminPassword"
+                                    name="adminPassword" placeholder="Password here"></textarea>
+                            </div>
+                        </div>
+                    </div>
+            </div>
+            <div class="card-footer">
+                <button class="btn btn--radius-2 btn--blue-2" type="submit">Log in to admin</button>
+            </div>
+            </form>
+        </div>
+    </div>
+</div>
