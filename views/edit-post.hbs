@@ -1,24 +1,64 @@
 <link rel="preconnect" href="https://fonts.gstatic.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap"
-    rel="stylesheet">
-{{#if responseMsg}}
+    rel="stylesheet" />
+{{!-- Filepond CDN --}}
+<link href="https://unpkg.com/filepond/dist/filepond.css" rel="stylesheet" />
+<link href="https://unpkg.com/filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css" rel="stylesheet">
+<link href="https://unpkg.com/filepond-plugin-image-edit/dist/filepond-plugin-image-edit.css" rel="stylesheet" />
+{{#if resStatus}}
 <style>
     .swal-overlay {
         background-color: rgba(0, 0, 0, 0.45);
     }
 </style>
 <script>
-    window.onload = () => {
+    setTimeout(async () => {
         $("#postDate").val(moment().format('LLL'));
-        $("#date").val(new Date()));
-    }
+        $("#date").val(new Date());
+        let resStatus = "{{resStatus}}";
+        let responseMsg = "{{responseMsg}}";
+        if (resStatus === "success") {
+            await swal("Done!", responseMsg, "success");
+            window.location.href = "./";
+        } else {
+            await swal("Error!", responseMsg, "error");
+            window.location.href = "./";
+        }
+    }, 0)
 </script>
 {{else}}
 <script>
-    setTimeout(()=>{
+    setTimeout(() => {
         $("#postDate").val(moment().format('LLL'));
         $("#date").val(new Date());
-    },0)
+        var existImage = {
+            id: "{{postData.mainImage.id}}",
+            name: "{{postData.mainImage.name}}",
+            type: "{{postData.mainImage.type}}",
+            size: "{{postData.mainImage.size}}",
+            metadata: {
+                resize: {
+                    mode: "{{postData.mainImage.metadata.resize.mode}}",
+                    size: {
+                        width: "{{postData.mainImage.metadata.resize.size.width}}",
+                        height: "{{postData.mainImage.metadata.resize.size.height}}"
+                    }
+                },
+                crop: {
+                    rect: {
+                        x: "{{postData.mainImage.metadata.rect.crop.x}}",
+                        y: "{{postData.mainImage.metadata.rect.crop.y}}",
+                        width: "{{postData.mainImage.metadata.rect.crop.width}}",
+                        height: "{{postData.mainImage.metadata.rect.crop.height}}",
+                    },
+                    aspectRatio: "{{postData.mainImage.metadata.crop.aspectRatio}}"
+                }
+            },
+            data: "{{postData.mainImage.data}}"
+        }
+        console.log(existImage)
+        $("#imgPreview").append(`<img width="100%" src="data:{{postData.mainImage.type}};base64, {{postData.mainImage.data}}" alt="Image error!"/>`)
+    }, 0)
 </script>
 {{/if}}
 <div style="padding-top: 2.45em;" class="page-wrapper bg-dark p-b-50">
@@ -33,7 +73,6 @@
                     <div style="display: none;">
                         <input hidden type="text" name="postDate" id="postDate">
                         <input hidden type="text" name="date" id="date">
-                        <input hidden type="text" name="imgSelected" id="imgSelected" value="false"> 
                     </div>
                     <div class="form-row">
                         <div class="name">Main title *</div>
@@ -91,25 +130,64 @@
                         <div class="name">Main image </div>
                         <div class="value">
                             <div class="input-group js-input-file">
-                                <img style="width: 100%;" id="imgView" src="/images/main-images/{{postData.postId}}.jpg" alt="">
-                                <input onchange="imageSelected(event)" class="input-file" type="file" accept="image/jpeg" name="mainImage" id="file">
-                                <label class="label--file" for="file">Choose file</label>
-                                <span class="input-file__info">No file chosen</span>
+                                <img style="width: 100%;" id="imgView" src="" alt="">
+                                <div class="input-group js-input-file">
+                                    <div id="imgPreview">
+                                        <p style="text-align: center;">Existing image :-</p>
+                                        <img style="width: 100%;" id="imgView" src="" alt="">
+                                    </div>
+                                    <input class="" type="file" name="mainImage" id="file">
+                                </div>
+                                <div class="label--desc">Upload your main image here. Max file size 1 MB</div>
                             </div>
-                            <div class="label--desc">Upload your main image here. Max file size 50 MB</div>
                         </div>
                     </div>
+                    <div class="card-footer">
+                        <button class="btn btn--radius-2 btn--blue-2" type="submit">Update existing post</button>
+                    </div>
+                </form>
             </div>
-            <div class="card-footer">
-                <button class="btn btn--radius-2 btn--blue-2" type="submit">Update existing post</button>
-            </div>
-            </form>
         </div>
     </div>
-</div>
-<script>
-    function imageSelected(event){
-        document.getElementById('imgView').src=URL.createObjectURL(event.target.files[0]);
-        document.getElementById("imgSelected").value="true";
-    }
-</script>
+
+
+    {{!-- Filepond cdn --}}
+    <script
+        src="https://unpkg.com/filepond-plugin-file-validate-type/dist/filepond-plugin-file-validate-type.js"></script>
+    <script src="https://unpkg.com/filepond-plugin-image-preview/dist/filepond-plugin-image-preview.js"></script>
+    <script src="https://unpkg.com/filepond-plugin-file-encode/dist/filepond-plugin-file-encode.js"></script>
+    <script
+        src="https://unpkg.com/filepond-plugin-file-validate-size/dist/filepond-plugin-file-validate-size.js"></script>
+    <script src="https://unpkg.com/filepond/dist/filepond.js"></script>
+    <style>
+        .filepond--credits {
+            display: none;
+        }
+    </style>
+    <script>
+        // FilePond Area
+        FilePond.registerPlugin(FilePondPluginImagePreview);
+        FilePond.registerPlugin(FilePondPluginFileValidateType);
+        FilePond.registerPlugin(FilePondPluginFileEncode);
+        FilePond.registerPlugin(FilePondPluginFileValidateSize);
+        FilePond.create(document.querySelector('input[type="file"]'), {
+            allowImagePreview: true,
+            acceptedFileTypes: ['image/jpg', 'image/jpeg'],
+            fileValidateTypeDetectType: (source, type) => new Promise((resolve, reject) => {
+                // Do custom type detection here and return with promise
+                resolve(type);
+            }),
+            maxFileSize: "1MB"
+        })
+    </script>
+    <script>
+        console.log(FilePond.find(document.getElementById("file")))
+    </script>
+    <script>
+        FilePond.find(document.getElementById("file")).onaddfilestart = () => {
+            $("#imgPreview").fadeOut();
+        }
+        FilePond.find(document.getElementById("file")).onremovefile = () => {
+            $("#imgPreview").fadeIn();
+        }
+    </script>

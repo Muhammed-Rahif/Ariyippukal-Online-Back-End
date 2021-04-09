@@ -1,6 +1,6 @@
 const express = require("express");
 const app = express();
-const PORT = process.env.PORT;
+const PORT = process.env.PORT || 3000;
 const cors = require("cors");
 const path = require("path");
 // const fileName = "./views/database/data.json";
@@ -72,6 +72,9 @@ app.get("/", verifyAdminLogin, (req, res) => {
   var postUpdatedMsg = req.query.postUpdatedMsg;
   if (postUpadtedStatus) {
     functions.getAllPosts().then((allPosts) => {
+      console.log(allPosts);
+      console.log(postUpadtedStatus);
+      console.log(postUpdatedMsg);
       res.render("view-posts", { allPosts, postUpadtedStatus, postUpdatedMsg });
     });
   } else {
@@ -114,46 +117,59 @@ app.post("/login", (req, res) => {
   });
 });
 
-app.get("/post", verifyAdminLogin, (req, res) => {
+app.get("/post",verifyAdminLogin, (req, res) => {
   res.render("add-post");
 });
 
 app.post("/post", (req, res) => {
   req.body.postId = uuidv4();
   let reqData = req.body;
-  let mainImage = req.files.mainImage;
+  reqData.mainImage = JSON.parse(reqData.mainImage);
+  reqData.mainImage.name = `${reqData.postId}.jpg`;
+  console.log(reqData);
   functions.createPost(reqData).then((response) => {
-    mainImage.mv(
-      "./public/images/main-images/" + reqData.postId + ".jpg",
-      (err, done) => {
-        if (err) {
-          console.log(err);
-          res.render("add-post", {
-            responseMsg: "Post not created!",
-            resStatus: "error",
-          });
-        } else {
-          generateThumbnail(reqData.postId);
-          res.render("add-post", {
-            responseMsg: "Post added successfully!",
-            resStatus: "success",
-          });
-        }
-      }
-    );
+    if (response.insertedCount) {
+      res.render("add-post", {
+        responseMsg: "Post created successfully!",
+        resStatus: "success",
+      });
+    } else {
+      res.render("add-post", {
+        responseMsg: "Post not created!",
+        resStatus: "error",
+      });
+    }
   });
+  // functions.createPost(reqData).then((response) => {
+  //   mainImage.mv(
+  //     "./public/images/main-images/" + reqData.postId + ".jpg",
+  //     (err, done) => {
+  //       if (err) {
+  //         console.log(err);
+  //         res.render("add-post", {
+  //           responseMsg: "Post not created!",
+  //           resStatus: "error",
+  //         });
+  //       } else {
+  //         generateThumbnail(reqData.postId);
+  //         res.render("add-post", {
+  //           responseMsg: "Post added successfully!",
+  //           resStatus: "success",
+  //         });
+  //       }
+  //     }
+  //   );
+  // });
 });
 
 app.post("/delete-post/:postId", (req, res) => {
   let postId = req.params.postId;
   functions.deletePost(postId).then((response) => {
-    functions.dltImage(postId, "thumb");
-    functions.dltImage(postId, "main");
     res.json({ deleteStatus: true });
   });
 });
 
-app.get("/edit-post/:postId", verifyAdminLogin, (req, res) => {
+app.get("/edit-post/:postId",verifyAdminLogin, (req, res) => {
   let postId = req.params.postId;
   functions.getPostDetails(postId).then((postData) => {
     res.render("edit-post", { postData });
@@ -161,48 +177,75 @@ app.get("/edit-post/:postId", verifyAdminLogin, (req, res) => {
 });
 
 app.post("/edit-post/:postId", (req, res) => {
-  let reqData = req.body;
-  console.log(reqData);
-  let postId = req.params.postId;
-  let imgSelected = reqData.imgSelected;
-  delete reqData.imgSelected;
-  functions.updatePost(postId, reqData).then(() => {
-    if (imgSelected === "true") {
-      let mainImage = req.files.mainImage;
-      mainImage.mv(
-        "./public/images/main-images/" + postId + ".jpg",
-        async (err, done) => {
-          if (err) {
-            console.log(err);
-            let postUpadtedStatus = encodeURIComponent("error");
-            let postUpdatedMsg = encodeURIComponent("Post not updated!");
-            res.redirect(
-              "/?postUpadtedStatus=" +
-                postUpadtedStatus +
-                "&postUpdatedMsg=" +
-                postUpdatedMsg
-            );
-          } else {
-            console.log(err);
-            let postUpadtedStatus = encodeURIComponent("success");
-            let postUpdatedMsg = encodeURIComponent(
-              "Post updated successfully!"
-            );
-            generateThumbnail(postId);
-            res.redirect(
-              "/?postUpadtedStatus=" +
-                postUpadtedStatus +
-                "&postUpdatedMsg=" +
-                postUpdatedMsg
-            );
-          }
-        }
+  var reqData = req.body;
+  var postId = req.params.postId;
+  if (reqData.mainImage) {
+    reqData.mainImage = JSON.parse(reqData.mainImage);
+    reqData.mainImage.name = `${reqData.postId}.jpg`;
+    functions.updatePost(postId, reqData).then(() => {
+      let postUpadtedStatus = encodeURIComponent("success");
+      let postUpdatedMsg = encodeURIComponent("Post updated successfully!");
+      res.redirect(
+        "/?postUpadtedStatus=" +
+          postUpadtedStatus +
+          "&postUpdatedMsg=" +
+          postUpdatedMsg
       );
-    } else {
-      // send post updates status to admin
-      res.redirect("/");
-    }
-  });
+    });
+  } else {
+    functions.getPostData(postId).then((postData) => {
+      reqData.mainImage = postData.mainImage;
+      reqData.mainImage = postData.mainImage;
+      reqData.mainImage.name = `${reqData.postId}.jpg`;
+      functions.updatePost(postId, reqData).then(() => {
+        let postUpadtedStatus = encodeURIComponent("success");
+        let postUpdatedMsg = encodeURIComponent("Post updated successfully!");
+        res.redirect(
+          "/?postUpadtedStatus=" +
+            postUpadtedStatus +
+            "&postUpdatedMsg=" +
+            postUpdatedMsg
+        );
+      });
+    });
+  }
+  // functions.updatePost(postId, reqData).then(() => {
+  //   if (imgSelected === "true") {
+  //     let mainImage = req.files.mainImage;
+  //     mainImage.mv(
+  //       "./public/images/main-images/" + postId + ".jpg",
+  //       async (err, done) => {
+  //         if (err) {
+  //           console.log(err);
+  //           let postUpadtedStatus = encodeURIComponent("error");
+  //           let postUpdatedMsg = encodeURIComponent("Post not updated!");
+  //           res.redirect(
+  //             "/?postUpadtedStatus=" +
+  //               postUpadtedStatus +
+  //               "&postUpdatedMsg=" +
+  //               postUpdatedMsg
+  //           );
+  //         } else {
+  //           console.log(err);
+  //           let postUpadtedStatus = encodeURIComponent("success");
+  //           let postUpdatedMsg = encodeURIComponent(
+  //             "Post updated successfully!"
+  //           );
+  //           generateThumbnail(postId);
+  //           res.redirect(
+  //             "/?postUpadtedStatus=" +
+  //               postUpadtedStatus +
+  //               "&postUpdatedMsg=" +
+  //               postUpdatedMsg
+  //           );
+  //         }
+  //       }
+  //     );
+  //   } else {
+  //     // send post updates status to admin
+  //     res.redirect("/");
+  //   }
+  // });
 });
 
 app.get("/most-read-posts", verifyAdminLogin, (req, res) => {
@@ -250,6 +293,15 @@ app.post("/add-featured-posts", (req, res) => {
 app.post("/get-all-featured-posts", (req, res) => {
   functions.getAllFeaturedPostsIds().then((allFeaturedPostsIds) => {
     res.json(allFeaturedPostsIds);
+  });
+});
+
+app.get("/getImageByPostId/:postId", (req, res) => {
+  var postId = req.params.postId;
+  functions.getImage(postId).then((imageData) => {
+    res.send(
+      `<img src="data:${imageData.type};base64, ${imageData.data}" alt="No image found!" />`
+    );
   });
 });
 

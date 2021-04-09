@@ -9,7 +9,7 @@
     }
 </style>
 <script>
-    window.onload = async() => {
+    setTimeout(async()=>{
         let postUpadtedStatus = "{{postUpadtedStatus}}";
         let postUpdatedMsg = "{{postUpdatedMsg}}";
         if (postUpadtedStatus === "success") {
@@ -18,7 +18,7 @@
             await swal("Error!", postUpadtedStatus, "error");
         }
         window.location.href="./"
-    }
+    },0)
 </script>
 {{/if}}
 <div style="font-family: 'Poppins', sans-serif;" class="container">
@@ -55,7 +55,7 @@
                         <td>{{this.mainTitle}}</td>
                         <td style="max-width: 40px;text-overflow: ellipsis;overflow: hidden;white-space: nowrap;">
                             {{this.mainDescription}}</td>
-                        <td><img width="100" src="/images/thumb-images/{{this.postId}}.jpg" alt=""></td>
+                        <td><img width="100" src="data:{{this.mainImage.type}};base64,{{this.mainImage.data}}" alt=""></td>
                         <td>
                             <a href="/edit-post/{{this.postId}}" class="btn btn-primary m-1 text-white">Edit</a>
                             <a onclick="confirmAlert('{{this.postId}}')"

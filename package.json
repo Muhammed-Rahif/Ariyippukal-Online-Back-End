@@ -23,7 +23,7 @@
     "node": "12.19.0"
   },
   "name": "back-end",
-  "version": "1.0.0",
+  "version": "1.5.0",
   "description": "Ariyippukal Online back end side",
   "main": "server.js",
   "author": "Muhammed Rahif",

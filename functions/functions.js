@@ -103,15 +103,6 @@ module.exports = {
         });
     });
   },
-  dltImage: (postId, type) => {
-    return new Promise((resolve, reject) => {
-      fs.unlink(`./public/images/${type}-images/${postId}.jpg`, function (err) {
-        if (err) throw err;
-        // if no error, file has been deleted successfully
-        console.log("File deleted!");
-      });
-    });
-  },
   updatePost: (postId, reqData) => {
     return new Promise((resolve, reject) => {
       db.get()
@@ -128,11 +119,52 @@ module.exports = {
               mainDescription: reqData.mainDescription,
               subDescription: reqData.subDescription,
               thirdDescription: reqData.thirdDescription,
+              mainImage: reqData.mainImage,
             },
           }
         )
         .then((response) => {
-          resolve();
+          db.get()
+            .collection(collections.MOST_READ_POSTS)
+            .updateOne(
+              { postId: postId },
+              {
+                $set: {
+                  date: reqData.date,
+                  postDate: reqData.postDate,
+                  mainTitle: reqData.mainTitle,
+                  postCategory: reqData.postCategory,
+                  postSubtitle: reqData.postSubtitle,
+                  mainDescription: reqData.mainDescription,
+                  subDescription: reqData.subDescription,
+                  thirdDescription: reqData.thirdDescription,
+                  mainImage: reqData.mainImage,
+                },
+              }
+            )
+            .then((response) => {
+              db.get()
+                .collection(collections.FEATURED_POSTS)
+                .updateOne(
+                  { postId: postId },
+                  {
+                    $set: {
+                      date: reqData.date,
+                      postDate: reqData.postDate,
+                      mainTitle: reqData.mainTitle,
+                      postCategory: reqData.postCategory,
+                      postSubtitle: reqData.postSubtitle,
+                      mainDescription: reqData.mainDescription,
+                      subDescription: reqData.subDescription,
+                      thirdDescription: reqData.thirdDescription,
+                      mainImage: reqData.mainImage,
+                    },
+                  }
+                )
+                .then((response) => {
+                  resolve();
+                });
+            });
         });
     });
   },
@@ -303,6 +335,16 @@ module.exports = {
         .findOne({ postId: postId })
         .then((postData) => {
           resolve(postData);
+        });
+    });
+  },
+  getImage: (postId) => {
+    return new Promise((resolve, reject) => {
+      db.get()
+        .collection(collections.ALL_POSTS)
+        .findOne({ postId: postId })
+        .then((postData) => {
+          resolve(postData.mainImage);
         });
     });
   },

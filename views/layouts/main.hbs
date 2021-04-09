@@ -27,9 +27,8 @@
     {{!-- Jquery cdn --}}
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 
-    {{!-- Jquery validate --}}
-    <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.3/dist/jquery.validate.js"></script>
-
+    {{!-- Moment .js --}}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
     <style>
         .preloader-wrapper {
             min-height: 100vh;
@@ -75,7 +74,7 @@
 </head>
 
 <body>
-    
+
     <div class="preloader-wrapper">
         <div class="preloader-box">
             <div class="loader"></div>
@@ -91,13 +90,12 @@
     <!-- Main JS-->
     <script src="/js/global.js"></script>
 
-    {{!-- Moment .js --}}
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
     <script>
-        window.onload=()=>{
+        window.onload = () => {
             $('.preloader-wrapper').fadeOut();
         }
     </script>
+
 </body>
 
 </html>
