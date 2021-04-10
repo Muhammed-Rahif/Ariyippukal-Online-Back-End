@@ -46,7 +46,7 @@
                         <td>{{this.mainTitle}}</td>
                         <td style="max-width: 40px;text-overflow: ellipsis;overflow: hidden;white-space: nowrap;">
                             {{this.mainDescription}}</td>
-                        <td><img width="100" src="/images/thumb-images/{{this.postId}}.jpg" alt=""></td>
+                        <td><img width="100" src="data:{{this.mainImage.type}};base64,{{this.mainImage.data}}" alt=""></td>
                         <td>
                             <div class="form-check">
                                 <input class="form-check-input" type="checkbox" value="{{this.postId}}"
