@@ -10,12 +10,12 @@
 </style>
 <script>
     setTimeout(async()=>{
-        let postUpadtedStatus = "{{postUpadtedStatus}}";
+        let postUpdatedStatus = "{{postUpdatedStatus}}";
         let postUpdatedMsg = "{{postUpdatedMsg}}";
-        if (postUpadtedStatus === "success") {
+        if (postUpdatedStatus === "success") {
             await swal("Done!", postUpdatedMsg, "success");
         } else {
-            await swal("Error!", postUpadtedStatus, "error");
+            await swal("Error!", postUpdatedStatus, "error");
         }
         window.location.href="./"
     },0)

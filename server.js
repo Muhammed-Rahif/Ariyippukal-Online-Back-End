@@ -68,14 +68,14 @@ const generateThumbnail = (postId) => {
 };
 
 app.get("/", verifyAdminLogin, (req, res) => {
-  var postUpadtedStatus = req.query.postUpadtedStatus;
+  var postUpdatedStatus = req.query.postUpdatedStatus;
   var postUpdatedMsg = req.query.postUpdatedMsg;
-  if (postUpadtedStatus) {
+  if (postUpdatedStatus) {
     functions.getAllPosts().then((allPosts) => {
       console.log(allPosts);
-      console.log(postUpadtedStatus);
+      console.log(postUpdatedStatus);
       console.log(postUpdatedMsg);
-      res.render("view-posts", { allPosts, postUpadtedStatus, postUpdatedMsg });
+      res.render("view-posts", { allPosts, postUpdatedStatus, postUpdatedMsg });
     });
   } else {
     functions.getAllPosts().then((allPosts) => {
@@ -183,11 +183,11 @@ app.post("/edit-post/:postId", (req, res) => {
     reqData.mainImage = JSON.parse(reqData.mainImage);
     reqData.mainImage.name = `${reqData.postId}.jpg`;
     functions.updatePost(postId, reqData).then(() => {
-      let postUpadtedStatus = encodeURIComponent("success");
+      let postUpdatedStatus = encodeURIComponent("success");
       let postUpdatedMsg = encodeURIComponent("Post updated successfully!");
       res.redirect(
         "/?postUpadtedStatus=" +
-          postUpadtedStatus +
+          postUpdatedStatus +
           "&postUpdatedMsg=" +
           postUpdatedMsg
       );
@@ -198,11 +198,11 @@ app.post("/edit-post/:postId", (req, res) => {
       reqData.mainImage = postData.mainImage;
       reqData.mainImage.name = `${reqData.postId}.jpg`;
       functions.updatePost(postId, reqData).then(() => {
-        let postUpadtedStatus = encodeURIComponent("success");
+        let postUpdatedStatus = encodeURIComponent("success");
         let postUpdatedMsg = encodeURIComponent("Post updated successfully!");
         res.redirect(
           "/?postUpadtedStatus=" +
-            postUpadtedStatus +
+          postUpdatedStatus +
             "&postUpdatedMsg=" +
             postUpdatedMsg
         );
