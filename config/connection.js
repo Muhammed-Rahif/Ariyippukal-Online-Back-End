@@ -5,10 +5,7 @@ const state = {
 
 module.exports.connect = (done) => {
   const dbname = "AriyippukalOnline";
-  const url =
-    "mongodb+srv://muhammed-rahif:hkYx1f5WywU2GPrA@ariyippukalonline.yrugo.mongodb.net/" +
-      dbname +
-      "?retryWrites=true&w=majority" || "mongodb://localhost:27017";
+  const url = process.env.MONGODB_URI || "mongodb://localhost:27017";
 
   mongoClient.connect(
     url,
