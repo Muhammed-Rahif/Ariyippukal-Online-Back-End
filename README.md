@@ -18,6 +18,6 @@
     ·
     <a href="https://github.com/Muhammed-Rahif/Ariyippukal-Online-Back-End/issues">Report Bug</a>
     ·
-    <a href="https://github.com/Muhammed-Rahif/Ariyippukal-Online-Back-End/pulls">Send A PR</a>
+    <a href="https://github.com/Muhammed-Rahif/Ariyippukal-Online-Back-End/pulls">Send a Pull Request</a>
   </p>
 </p>
