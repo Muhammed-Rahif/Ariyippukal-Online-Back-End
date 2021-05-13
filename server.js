@@ -8,14 +8,15 @@ const path = require("path");
 const handlebars = require("express-handlebars").create({
   extname: "hbs",
 });
-const corsOptions = {
-  origin: "http://localhost:5500",
-  optionsSuccessStatus: 200, // some legacy browsers (IE11, various SmartTVs) choke on 204
-  methods: "GET",
-  credentials: true,
-};
+// const corsOptions = {
+//   origin: "http://localhost:5500",
+//   optionsSuccessStatus: 200, // some legacy browsers (IE11, various SmartTVs) choke on 204
+//   methods: "GET",
+//   credentials: true,
+// };
 const functions = require("./functions/functions");
 const session = require("express-session");
+const MongoStore = require("connect-mongo");
 const bodyParser = require("body-parser");
 const fileUpload = require("express-fileupload");
 const { v4: uuidv4 } = require("uuid");
@@ -24,7 +25,16 @@ const fs = require("fs");
 const db = require("./config/connection");
 
 app.use(express.static(path.join(__dirname, "public")));
-app.use(session({ secret: "unique key", cookie: { maxAge: 6000000 } }));
+app.use(
+  session({
+    store: MongoStore.create({
+      mongoUrl:
+        process.env.MONGODB_URI || "mongodb://localhost:27017/AriyippukalOnline",
+    }),
+    secret: "unique key",
+    cookie: { maxAge: 1296000000 },
+  })
+);
 app.engine("hbs", handlebars.engine);
 app.set("view engine", "hbs");
 app.set("views", path.join(__dirname, "views"));
